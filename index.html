@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Z Mode Contract Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: one column of sections; hero with a sample 5-contract strip, steps, 5 pricing cards, live demo, rules, FAQ. Single dark look by brand choice. */
+:root{
+  color-scheme: dark;
+  --bg:#0f0f14; --card:#17171f; --card-2:#1d1d27; --line:#2a2a37; --line-soft:#21212c;
+  --fg:#ededf3; --muted:#a0a0b6; --dim:#7d7d93;
+  --accent:#7c3aed; --accent-text:#a78bfa; --accent-soft:#241a3d;
+  --win:#22c55e; --win-soft:#0f2a1b; --loss:#ef4444; --loss-soft:#2e1416;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--accent-text)}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
+
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:56px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text)}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;max-width:640px}
+.sec-head h2{font-size:clamp(24px,4vw,32px);font-weight:700}
+.sec-head p{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:10px;border:1px solid transparent;font:600 15px var(--font);cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s,transform .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#6d28d9}
+.btn-ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--accent-text)}
+
+/* top bar */
+.top{border-bottom:1px solid var(--line-soft)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--fg);text-decoration:none}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent);display:grid;place-items:center;color:var(--accent-text)}
+.logo span{color:var(--accent-text)}
+.top nav{display:flex;gap:18px;font-size:14px}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--fg)}
+@media (max-width:640px){.top nav{display:none}}
+
+/* hero */
+.hero{padding-block:56px 40px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
+.hero h1{font-size:clamp(34px,6vw,56px);font-weight:800;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--accent-text)}
+.tagline{font-size:clamp(18px,2.4vw,22px);font-weight:600;margin-top:16px}
+.tagline b{color:var(--win)}
+.sub{color:var(--muted);margin-top:14px;max-width:520px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.pack{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:16px}
+.pack-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pack-head b{font-size:15px}
+.pack-head span{font-size:12.5px;color:var(--muted)}
+.strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.chip{border-radius:10px;padding:12px 6px;text-align:center;font-weight:700;font-size:13px;border:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.chip small{font-weight:500;font-size:11px;color:var(--muted)}
+.chip.win{background:var(--win-soft);border-color:#1d5a37;color:var(--win)}
+.chip.loss{background:var(--loss-soft);border-color:#5e2427;color:var(--loss)}
+.chip.pend{background:var(--card-2);color:var(--dim)}
+.pack-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--line-soft);font-size:14px}
+.pack-foot b{color:var(--win);font-size:18px}
+@media (max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr)}}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;list-style:none;margin:0;padding:0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px}
+.step-n{width:30px;height:30px;border-radius:8px;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center;font-weight:700;font-size:14px}
+.step h3{font-size:16px;font-weight:600}
+.step p{color:var(--muted);font-size:14px}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:minmax(0,1fr)}}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:stretch}
+.plan{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;display:flex;flex-direction:column;gap:16px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.plan:hover{transform:translateY(-3px);border-color:#3a3a4c}
+.plan.pop{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 18px 40px -22px var(--accent)}
+.badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.plan-name{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.plan-size{font-size:24px;font-weight:700;margin-top:4px}
+.fee{display:flex;align-items:baseline;gap:6px}
+.fee b{font-size:34px;font-weight:800;color:var(--win);letter-spacing:-.02em}
+.fee span{color:var(--muted);font-size:13px}
+.specs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:13.5px}
+.specs li{display:flex;align-items:center;gap:8px}
+.specs svg{flex:none;color:var(--accent-text)}
+.rewards{display:flex;flex-direction:column;border-top:1px solid var(--line-soft)}
+.rw{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.rw span{color:var(--muted)}
+.rw span em{display:block;font-style:normal;font-size:11.5px;color:var(--dim)}
+.rw b{font-size:15px}
+.rw.top-rw b{color:var(--win)}
+.plan .btn{margin-top:auto;width:100%}
+.plan:not(.pop) .btn{background:transparent;border-color:var(--accent);color:var(--fg)}
+.plan:not(.pop) .btn:hover{background:var(--accent)}
+.plans-note{margin-top:16px;color:var(--muted);font-size:13.5px}
+@media (max-width:1120px){.plans{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:720px){.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.plans{grid-template-columns:minmax(0,1fr)}}
+
+/* demo */
+.demo{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.tiers{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.tier-btn{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--muted);font:600 13.5px var(--font);cursor:pointer}
+.tier-btn:hover{color:var(--fg)}
+.tier-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.slot{min-height:104px;border-radius:12px;border:1px dashed var(--line);background:var(--card-2);color:var(--dim);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 4px;transition:transform .12s,border-color .15s}
+.slot:hover{transform:translateY(-2px);border-color:var(--accent-text)}
+.slot small{font-size:11px;font-weight:500}
+.slot b{font-size:15px;font-weight:800}
+.slot .pl{font-size:12px}
+.slot.win{border-style:solid;border-color:#1d5a37;background:var(--win-soft);color:var(--win)}
+.slot.loss{border-style:solid;border-color:#5e2427;background:var(--loss-soft);color:var(--loss)}
+.hint{margin-top:12px;font-size:13px;color:var(--dim)}
+.result{display:flex;flex-direction:column;gap:16px}
+.counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.count{background:var(--card-2);border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px}
+.count span{display:block;font-size:12px;color:var(--muted)}
+.count b{font-size:22px;font-weight:700}
+.count.w b{color:var(--win)} .count.l b{color:var(--loss)}
+.prog-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.prog{height:10px;border-radius:999px;background:var(--card-2);border:1px solid var(--line-soft);overflow:hidden;display:flex}
+.prog i{display:block;height:100%;transition:width .25s}
+.prog .pw{background:var(--win)} .prog .pl{background:var(--loss)}
+.reward{border-radius:12px;padding:16px;border:1px solid var(--line);background:var(--card-2)}
+.reward.on{border-color:#1d5a37;background:var(--win-soft)}
+.reward span{display:block;font-size:13px;color:var(--muted)}
+.reward b{display:block;font-size:30px;font-weight:800;margin-top:2px}
+.reward.on b{color:var(--win)}
+.reward p{font-size:13px;color:var(--muted);margin-top:6px}
+.pnl{font-size:13.5px;color:var(--muted)}
+.pnl b{color:var(--fg)}
+@media (max-width:860px){.demo{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:420px){.slots{gap:6px}.slot{min-height:88px}.slot b{font-size:13px}}
+
+/* rules + faq */
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0;counter-reset:r}
+.acc{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 16px;font-weight:600}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary .rn{flex:none;width:28px;height:28px;border-radius:7px;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center;font-size:13px;font-weight:700}
+.acc summary .tt{flex:1}
+.acc summary .chev{flex:none;color:var(--dim);transition:transform .2s}
+.acc[open] summary .chev{transform:rotate(180deg)}
+.acc .body{padding:0 16px 16px 56px;color:var(--muted);font-size:14px}
+.faq{display:flex;flex-direction:column;gap:10px;max-width:780px}
+.faq .acc .body{padding-left:16px}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+
+footer{border-top:1px solid var(--line-soft);padding-block:28px 40px;color:var(--dim);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>Funded<span>XYZ</span></a>
+    <nav aria-label="Sections"><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#demo">Demo</a><a href="#rules">Rules</a></nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">FundedXYZ · New product</p>
+        <h1 style="margin-top:12px">Z Mode <em>Contract Edition</em></h1>
+        <p class="tagline">5 Contracts. Fixed Risk. Up to <b>$2,800</b> Scholarship.</p>
+        <p class="sub">Skip the open-ended challenge. You get a pack of 5 trades, each with a 3% TP and a 3% max loss. Win 3 or more, and you earn back part of your fee, more than your fee, or a full scholarship.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#pricing">Start Your Contracts</a>
+          <a class="btn btn-ghost" href="#demo">Try the demo</a>
+        </div>
+      </div>
+      <div class="pack" aria-label="Example contract pack">
+        <div class="pack-head"><b>Example pack · Professional $25,000</b><span>Each contract settles at ±3%</span></div>
+        <div class="strip">
+          <div class="chip win">WIN<small>#1 · +3%</small></div>
+          <div class="chip win">WIN<small>#2 · +3%</small></div>
+          <div class="chip loss">LOSS<small>#3 · −3%</small></div>
+          <div class="chip win">WIN<small>#4 · +3%</small></div>
+          <div class="chip win">WIN<small>#5 · +3%</small></div>
+        </div>
+        <div class="pack-foot"><span>4 of 5 won · 125% of the $190 fee</span><b class="num">$240</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">How it works</p><h2>Four steps from fee to reward</h2></div>
+      <ol class="steps">
+        <li class="step"><span class="step-n">1</span><h3>Choose your tier</h3><p>Pick an account size from $2,000 to $100,000. You get 5 contracts.</p></li>
+        <li class="step"><span class="step-n">2</span><h3>Trade 1 contract per day</h3><p>Open one trade at a time, with stop loss and take profit locked at 3% each.</p></li>
+        <li class="step"><span class="step-n">3</span><h3>Each contract wins or loses</h3><p>Take profit hit means a WIN at +3%. Stop loss hit means a LOSS at −3%.</p></li>
+        <li class="step"><span class="step-n">4</span><h3>Get rewarded</h3><p>3, 4 or 5 wins unlock a reward in USDT, paid after compliance review.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">Pricing</p><h2>Pick your contract pack</h2><p>One fee, 5 contracts. The more contracts you win, the bigger the reward.</p></div>
+      <div class="plans" id="plans"></div>
+      <p class="plans-note">0–2 wins: no reward. Rewards are paid in USDT after compliance review.</p>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">Interactive demo</p><h2>See what your 5 contracts could earn</h2><p>Tap a contract to switch it between Pending, WIN and LOSS.</p></div>
+      <div class="demo">
+        <div>
+          <p class="lbl" id="tierLbl">Tier</p>
+          <div class="tiers" id="tiers" role="group" aria-labelledby="tierLbl"></div>
+          <p class="lbl">Your 5 contracts</p>
+          <div class="slots" id="slots"></div>
+          <p class="hint">Sample results are filled in. Press Reset to start from 5 pending contracts.</p>
+        </div>
+        <div class="result" aria-live="polite">
+          <div class="counts">
+            <div class="count w"><span>Wins</span><b class="num" id="cW">0</b></div>
+            <div class="count l"><span>Losses</span><b class="num" id="cL">0</b></div>
+            <div class="count"><span>Pending</span><b class="num" id="cP">5</b></div>
+          </div>
+          <div>
+            <div class="prog-row"><span>Completed</span><span class="num" id="progTxt">0 / 5</span></div>
+            <div class="prog" aria-hidden="true"><i class="pw" id="pW" style="width:0"></i><i class="pl" id="pL" style="width:0"></i></div>
+          </div>
+          <div class="reward" id="rewardBox">
+            <span id="rewardLbl">Reward unlocked</span>
+            <b class="num" id="rewardAmt">$0</b>
+            <p id="rewardNote">–</p>
+          </div>
+          <p class="pnl">Account result at fixed ±3% per contract: <b class="num" id="pnl">$0</b></p>
+          <button type="button" class="btn btn-ghost" id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">Contract rules</p><h2>Three rules every contract follows</h2></div>
+      <ol class="rules" id="rulesList"></ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Trading involves risk. Rewards are subject to compliance review and terms.</p>
+    <p>Terms apply · © FundedXYZ</p>
+  </div>
+</footer>
+
+<script>
+/* ===== Edit prices and rewards here ===== */
+const TIERS = [
+  { id:'starter', name:'Starter',      size:2000,   fee:20,  r3:10,  r4:25,  r5:80   },
+  { id:'growth',  name:'Growth',       size:5000,   fee:40,  r3:20,  r4:50,  r5:160  },
+  { id:'pro',     name:'Professional', size:25000,  fee:190, r3:95,  r4:240, r5:800, popular:true },
+  { id:'expert',  name:'Expert',       size:50000,  fee:340, r3:170, r4:425, r5:1400 },
+  { id:'elite',   name:'Elite',        size:100000, fee:600, r3:300, r4:750, r5:2800 }
+];
+const RISK = 0.03;
+
+const RULES = [
+  ['5 contracts per pack','Each contract is one trade, with a TP of 3% and a max loss of 3% of the account size.'],
+  ['One contract per day','You can open at most 1 contract on any trading day.'],
+  ['Manual close counts as a LOSS','If you close a contract yourself before TP or SL is hit, the contract is forfeited and counts as a LOSS.'],
+];
+
+
+const $ = id => document.getElementById(id);
+const usd = n => '$' + n.toLocaleString('en-US');
+const pct = (r, fee) => Math.round(r / fee * 100) + '%';
+const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
+const chev = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+/* pricing cards */
+$('plans').innerHTML = TIERS.map(t => `
+  <article class="plan${t.popular ? ' pop' : ''}">
+    ${t.popular ? '<span class="badge">Most Popular</span>' : ''}
+    <div><p class="plan-name">${t.name}</p><p class="plan-size num">${usd(t.size)}</p></div>
+    <div class="fee"><b class="num">${usd(t.fee)}</b><span>one-time fee</span></div>
+    <ul class="specs">
+      <li>${check}5 Contracts</li>
+      <li>${check}TP 3% (${usd(t.size * RISK)})</li>
+      <li>${check}Max loss per contract 3% (${usd(t.size * RISK)})</li>
+      <li>${check}Leverage 1:5</li>
+    </ul>
+    <div class="rewards">
+      <div class="rw"><span>3 wins<em>50% refund</em></span><b class="num">${usd(t.r3)}</b></div>
+      <div class="rw"><span>4 wins<em>125% back</em></span><b class="num">${usd(t.r4)}</b></div>
+      <div class="rw top-rw"><span>5 wins<em>Scholarship</em></span><b class="num">${usd(t.r5)}</b></div>
+    </div>
+    <button type="button" class="btn btn-primary" data-start="${t.id}">Start Contracts</button>
+  </article>`).join('');
+
+/* rules + faq accordions */
+$('rulesList').innerHTML = RULES.map((r, i) => `
+  <li><details class="acc rule"><summary><span class="rn num">${i + 1}</span><span class="tt">${r[0]}</span>${chev}</summary><p class="body">${r[1]}</p></details></li>`).join('');
+document.querySelectorAll('.rule').forEach(d => d.open = true);
+
+/* demo */
+let tier = TIERS.find(t => t.popular) || TIERS[0];
+let slots = ['win','win','loss','win','pending'];
+const NEXT = { pending:'win', win:'loss', loss:'pending' };
+
+function renderTiers(){
+  $('tiers').innerHTML = TIERS.map(t =>
+    `<button type="button" class="tier-btn" data-tier="${t.id}" aria-pressed="${t.id === tier.id}">${t.name} · ${usd(t.size)}</button>`).join('');
+}
+function rewardFor(w){ return w >= 5 ? tier.r5 : w === 4 ? tier.r4 : w === 3 ? tier.r3 : 0; }
+function renderDemo(){
+  const risk = tier.size * RISK;
+  $('slots').innerHTML = slots.map((s, i) => {
+    const label = s === 'win' ? 'WIN' : s === 'loss' ? 'LOSS' : 'Pending';
+    const pl = s === 'win' ? '+' + usd(risk) : s === 'loss' ? '−' + usd(risk) : '–';
+    return `<button type="button" class="slot ${s === 'pending' ? '' : s}" data-i="${i}" aria-label="Contract ${i + 1}: ${label}. Tap to change.">
+      <small>#${i + 1}</small><b>${label}</b><span class="pl num">${pl}</span></button>`;
+  }).join('');
+  const w = slots.filter(s => s === 'win').length, l = slots.filter(s => s === 'loss').length, p = 5 - w - l;
+  $('cW').textContent = w; $('cL').textContent = l; $('cP').textContent = p;
+  $('progTxt').textContent = (w + l) + ' / 5';
+  $('pW').style.width = (w / 5 * 100) + '%'; $('pL').style.width = (l / 5 * 100) + '%';
+  const r = rewardFor(w), best = rewardFor(w + p);
+  const box = $('rewardBox');
+  box.classList.toggle('on', r > 0);
+  $('rewardAmt').textContent = usd(r);
+  const level = w >= 5 ? 'Scholarship' : w === 4 ? '125% of your fee' : w === 3 ? '50% refund' : 'No reward yet';
+  $('rewardLbl').textContent = 'Reward unlocked · ' + level;
+  let note;
+  if (p === 0) note = r > 0 ? 'Pack complete. Paid in USDT after compliance review.' : 'Pack complete with ' + w + ' wins. 0–2 wins earn no reward.';
+  else if (best === 0) note = 'Even if every pending contract wins, this pack cannot reach 3 wins.';
+  else note = 'Still possible: up to ' + usd(best) + ' if all ' + p + ' pending contract' + (p > 1 ? 's win.' : ' wins.');
+  $('rewardNote').textContent = note;
+  const net = (w - l) * risk;
+  $('pnl').textContent = (net > 0 ? '+' : net < 0 ? '−' : '') + usd(Math.abs(net));
+}
+
+$('tiers').addEventListener('click', e => {
+  const b = e.target.closest('[data-tier]'); if (!b) return;
+  tier = TIERS.find(t => t.id === b.dataset.tier); renderTiers(); renderDemo();
+});
+$('slots').addEventListener('click', e => {
+  const b = e.target.closest('[data-i]'); if (!b) return;
+  const i = +b.dataset.i; slots[i] = NEXT[slots[i]]; renderDemo();
+  const again = $('slots').querySelector('[data-i="' + i + '"]'); if (again) again.focus();
+});
+$('resetBtn').addEventListener('click', () => { slots = ['pending','pending','pending','pending','pending']; renderDemo(); });
+$('plans').addEventListener('click', e => {
+  const b = e.target.closest('[data-start]'); if (!b) return;
+  tier = TIERS.find(t => t.id === b.dataset.start);
+  slots = ['pending','pending','pending','pending','pending'];
+  renderTiers(); renderDemo();
+  $('demo').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
+
+renderTiers(); renderDemo();
+</script>
+</body>
+</html>
